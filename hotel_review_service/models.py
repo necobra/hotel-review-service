@@ -1,6 +1,9 @@
 from django.contrib.auth.models import AbstractUser
+from django.core import validators
 from django.db import models
 from django.db.models import UniqueConstraint
+
+from core import settings
 
 
 class HotelClass(models.Model):
@@ -19,6 +22,7 @@ class Placement(models.Model):
     def __str__(self) -> str:
         return f"{self.country}, {self.city}, {self.adress}"
 
+
 class Hotel(models.Model):
     name = models.CharField(max_length=255, unique=True)
     placement = models.OneToOneField(
@@ -30,13 +34,20 @@ class Hotel(models.Model):
 
     @property
     def average_rating(self) -> float:
-        return float(self.reviews.aggregate(models.Avg("rating")).get("rating__avg", 0.0))
+        return float(
+            round(
+                self.reviews.aggregate(models.Avg("rating"))
+                .get("rating__avg", 0),
+                1
+            )
+        )
 
     class Meta:
         ordering = ("name",)
 
     def __str__(self) -> str:
         return f"{self.name} {self.hotel_class} {self.placement}"
+
 
 class User(AbstractUser):
     @property
@@ -49,21 +60,33 @@ class User(AbstractUser):
     def __str__(self) -> str:
         return f"{self.first_name} {self.last_name}"
 
+
 class Review(models.Model):
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="reviews"
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="reviews"
     )
     hotel = models.ForeignKey(
-        Hotel, on_delete=models.CASCADE, related_name="reviews"
+        Hotel,
+        on_delete=models.CASCADE,
+        related_name="reviews"
     )
     caption = models.CharField(max_length=255)
     comment = models.TextField()
     created_at = models.DateField(auto_now_add=True)
+    rating = models.IntegerField(
+        validators=[
+            validators.MinValueValidator(0),
+            validators.MaxValueValidator(10)
+        ]
+    )
 
     class Meta:
         ordering = ("caption",)
         constraints = [
-            UniqueConstraint(fields=["user", "hotel"], name="unique_user_hotel_review")
+            UniqueConstraint(fields=["user", "hotel"],
+                             name="unique_user_hotel_review")
         ]
 
     def __str__(self) -> str:
