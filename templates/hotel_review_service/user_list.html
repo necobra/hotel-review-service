@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>
+    User list
+  </h1>
+  {% if user_list %}
+    <ul>
+      {% for user in user_list %}
+        <li>
+{#          <a href="{% url "hotel-review-service:user-detail" pk=user.id %} ">#}
+            <div>
+              {{ user.first_name }} {{ user.last_name }}
+            </div>
+            <div>
+              {{ user.reviews_amount }}
+            </div>
+{#          </a>#}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>There are no user yet</p>
+  {% endif %}
+{% endblock %}

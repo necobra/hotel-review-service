@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>
+    Review list
+  </h1>
+  {% if review_list %}
+    <ul>
+      {% for review in review_list %}
+        <li>
+{#          <a href="{% url "hotel-review-service:review-detail" pk=review.id %} ">#}
+            <div>
+              {{ review.user.first_name }} {{ review.user.last_name }}, {{ review.hotel.name }}
+            </div>
+            <div>
+              {{ review.caption }}
+            </div>
+            <div>
+              {{ review.comment }}
+            </div>
+{#          </a>#}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>There are no review yet</p>
+  {% endif %}
+{% endblock %}

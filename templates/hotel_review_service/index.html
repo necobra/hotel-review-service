@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Hotel Review Service Home</h1>
+    <p>Welcome to Best Review Site Ever!</p>
+    <h2>Dynamic content</h2>
+    <p>The Hotel review service has the following record counts:</p>
+    <ul>
+        <li><strong>Users:</strong> {{ num_users }}</li>
+        <li><strong>Hotels:</strong> {{ num_hotel }}</li>
+        <li><strong>Reviews:</strong> {{ num_reviews }}</li>
+    </ul>
+
+    <p>You have visited this page
+        {{ num_visits }} time{{ num_visits|pluralize }}.
+    </p>
+
+{% endblock %}

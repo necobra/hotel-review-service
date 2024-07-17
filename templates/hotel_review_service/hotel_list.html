@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>
+    Hotel list
+  </h1>
+  {% if hotel_list %}
+    <ul>
+      {% for hotel in hotel_list %}
+        <li>
+{#          <a href="{% url "hotel-review-service:hotel-detail" pk=hotel.id %} ">#}
+            <div>
+              {{ hotel.name }} {{ hotel.placement }}
+            </div>
+            <div>
+              Hotel class: {{ hotel.hotel_class }}. Rating: {{ hotel.average_rating }}
+            </div>
+{#          </a>#}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>There are no hotel yet</p>
+  {% endif %}
+{% endblock %}
