@@ -34,13 +34,10 @@ class Hotel(models.Model):
 
     @property
     def average_rating(self) -> float:
-        return float(
-            round(
-                self.reviews.aggregate(models.Avg("rating"))
-                .get("rating__avg", 0),
-                1
-            )
-        )
+        average = self.reviews.aggregate(
+            hotel_rating=models.Avg("rating")
+        ).get("hotel_rating")
+        return round(average, 1) if average is not None else 0.0
 
     class Meta:
         ordering = ("name",)
