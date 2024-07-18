@@ -10,7 +10,10 @@
         <li>
 {#          <a href="{% url "hotel-review-service:review-detail" pk=review.id %} ">#}
             <div>
-              {{ review.user.first_name }} {{ review.user.last_name }}, {{ review.hotel.name }}
+              {{ review.hotel.name }}({{ review.hotel.hotel_class }}), {{ review.rating }}
+            </div>
+            <div>
+              {{ review.user.first_name }} {{ review.user.last_name }}
             </div>
             <div>
               {{ review.caption }}

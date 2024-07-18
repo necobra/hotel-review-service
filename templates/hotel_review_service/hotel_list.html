@@ -8,14 +8,14 @@
     <ul>
       {% for hotel in hotel_list %}
         <li>
-{#          <a href="{% url "hotel-review-service:hotel-detail" pk=hotel.id %} ">#}
+          <a href="{% url "hotel_review_service:hotel-detail" pk=hotel.id %} ">
             <div>
               {{ hotel.name }} {{ hotel.placement }}
             </div>
             <div>
               Hotel class: {{ hotel.hotel_class }}. Rating: {{ hotel.average_rating }}
             </div>
-{#          </a>#}
+          </a>
         </li>
       {% endfor %}
     </ul>
