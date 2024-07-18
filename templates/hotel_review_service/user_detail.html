@@ -15,15 +15,7 @@
   <hr>
   <ul>
     {% for review in user.reviews.all %}
-      <div>
-        {{ review.hotel.name }}({{ review.hotel.hotel_class }}), {{ review.rating }}
-      </div>
-      <div>
-        {{ review.caption }}
-      </div>
-      <div>
-        {{ review.comment }}
-      </div>
+      {% include "hotel_review_service/review_inline.html" %}
     {% endfor %}
   </ul>
 {% endblock %}

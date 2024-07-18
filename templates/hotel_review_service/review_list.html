@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load review_inline %}
 
 {% block content %}
   <h1>
@@ -9,18 +10,7 @@
       {% for review in review_list %}
         <li>
 {#          <a href="{% url "hotel-review-service:review-detail" pk=review.id %} ">#}
-            <div>
-              {{ review.hotel.name }}({{ review.hotel.hotel_class }}), {{ review.rating }}
-            </div>
-            <div>
-              {{ review.user.first_name }} {{ review.user.last_name }}
-            </div>
-            <div>
-              {{ review.caption }}
-            </div>
-            <div>
-              {{ review.comment }}
-            </div>
+           {% include "hotel_review_service/review_inline.html" %}
 {#          </a>#}
         </li>
       {% endfor %}

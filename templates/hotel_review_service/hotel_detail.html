@@ -17,15 +17,7 @@
   <hr>
   <ul>
     {% for review in hotel.reviews.all %}
-      <div>
-        {{ review.user.first_name }} {{ review.user.last_name }}
-      </div>
-      <div>
-        {{ review.caption }}
-      </div>
-      <div>
-        {{ review.comment }}
-      </div>
+      {% include "hotel_review_service/review_inline.html" %}
     {% endfor %}
   </ul>
 {% endblock %}
