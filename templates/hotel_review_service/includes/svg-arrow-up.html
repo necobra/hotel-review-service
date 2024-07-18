@@ -1,0 +1,11 @@
+{% extends "hotel_review_service/includes/svg-arrow.html" %}
+
+{% block svg-path %}
+  <path fill-rule="evenodd"
+        d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708z"
+      {% if review in user.liked %}
+        class="svg-green"
+      {% endif %}
+  >
+  </path>
+{% endblock %}

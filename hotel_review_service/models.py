@@ -51,6 +51,18 @@ class User(AbstractUser):
     def reviews_amount(self) -> int:
         return self.reviews.count()
 
+    @property
+    def liked(self) -> list["Review"]:
+        return [
+            reviewuser.review for reviewuser in self.reviewuser_set.filter(action="L")
+        ]
+
+    @property
+    def disliked(self) -> list["Review"]:
+        return [
+            reviewuser.review for reviewuser in self.reviewuser_set.filter(action="D")
+        ]
+
     class Meta:
         ordering = ("first_name", "last_name")
 
@@ -59,15 +71,15 @@ class User(AbstractUser):
 
 
 class Review(models.Model):
-    user = models.ForeignKey(
+    users = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="reviews"
+        related_name="reviews",
+        through="ReviewUser",
     )
     hotel = models.ForeignKey(
         Hotel,
         on_delete=models.CASCADE,
-        related_name="reviews"
+        related_name="reviews",
     )
     caption = models.CharField(max_length=255)
     comment = models.TextField()
@@ -78,19 +90,43 @@ class Review(models.Model):
             validators.MaxValueValidator(10)
         ]
     )
-    likes = models.IntegerField()
-    dislikes = models.IntegerField()
 
     @property
     def review_rating(self) -> int:
         return self.likes - self.dislikes
 
+    @property
+    def likes(self) -> int:
+        return self.reviewuser_set.filter(action="L").count()
+
+    @property
+    def dislikes(self) -> int:
+        return self.reviewuser_set.filter(action="D").count()
+
+    @property
+    def author(self) -> settings.AUTH_USER_MODEL:
+        return self.reviewuser_set.get(action="A").user
+
     class Meta:
+        # todo make order by likes
         ordering = ("caption",)
-        constraints = [
-            UniqueConstraint(fields=["user", "hotel"],
-                             name="unique_user_hotel_review")
-        ]
 
     def __str__(self) -> str:
         return self.caption
+
+
+class ReviewUser(models.Model):
+    actions = (
+        ("A", "Author"),
+        ("L", "Liked"),
+        ("D", "Disliked")
+    )
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    review = models.ForeignKey(Review, on_delete=models.CASCADE)
+    action = models.CharField(max_length=1, choices=actions, null=True)
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(fields=("user", "review"), name="unique_user_review")
+        ]

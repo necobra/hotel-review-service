@@ -16,7 +16,8 @@ from hotel_review_service.views import (
     HotelUpdateView,
     HotelDeleteView,
     HotelCreateView,
-    index
+    index,
+    review_rate
 )
 
 urlpatterns = [
@@ -43,6 +44,10 @@ urlpatterns = [
     path("reviews/<int:pk>/delete",
          ReviewDeleteView.as_view(),
          name="review-delete"),
+
+    path("reviews/<int:pk>/rate",
+         review_rate,
+         name="review-rate"),
 
     path("hotels/",
          HotelListView.as_view(),

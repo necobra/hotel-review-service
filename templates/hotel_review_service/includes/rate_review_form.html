@@ -1,3 +1,14 @@
-<form action="" method="POST">
-  <button>+</button>
+{% load static %}
+<form action="{% url 'hotel_review_service:review-rate' review.id %}" method="POST">
+  {% csrf_token %}
+  
+  <button type="submit" name="action" value="like" class="bg-transparent border-0 btn">
+    {% include 'hotel_review_service/includes/svg-arrow-up.html' %}
+  </button>
+  
+  <span>{{ review.review_rating }}</span>
+  
+  <button type="submit" name="action" value="dislike" class="bg-transparent border-0 btn">
+    {% include 'hotel_review_service/includes/svg-arrow-down.html' %}
+  </button>
 </form>

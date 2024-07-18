@@ -1,7 +1,9 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render
+from django.db.models import Avg
+from django.http import HttpResponse
+from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views import generic
 
@@ -31,7 +33,11 @@ def index(request):
 
 class HotelListView(LoginRequiredMixin, generic.ListView):
     model = Hotel
-    queryset = Hotel.objects.select_related("placement", "hotel_class").prefetch_related("reviews")
+    queryset = (
+        Hotel.objects.select_related("placement", "hotel_class")
+        .prefetch_related("reviews")
+        # .annotate(average_rating=Avg("reviews__hotel_rating"))
+    )
     paginate_by = 5
 
 
@@ -59,7 +65,7 @@ class HotelDeleteView(LoginRequiredMixin, generic.DetailView):
 
 class ReviewListView(LoginRequiredMixin, generic.ListView):
     model = Review
-    queryset = Review.objects.select_related("user", "hotel")
+    queryset = Review.objects.select_related("hotel").prefetch_related("users")
     paginate_by = 5
 
 
@@ -85,9 +91,31 @@ class ReviewDeleteView(LoginRequiredMixin, generic.DetailView):
     success_url = reverse_lazy("hotel_review_service:review-list")
 
 
+def review_rate(request, pk: int):
+    review = get_object_or_404(Review, id=pk)
+    if request.method == 'POST':
+        if review.author == request.user:
+            HttpResponse(status=100)
+            # todo print to user you cannot vote for your review
+        action = request.POST.get('action')
+        if action == 'like':
+            action = "L"
+        elif action == 'dislike':
+            action = "D"
+        review_user, *_ = review.reviewuser_set.get_or_create(user=request.user)
+        if review_user.action == action:
+            review_user.action = None
+        else:
+            review_user.action = action
+        review_user.save()
+
+    return redirect(request.META['HTTP_REFERER'])
+
+
 class UserListView(LoginRequiredMixin, generic.ListView):
     model = get_user_model()
     paginate_by = 5
+    queryset = get_user_model().objects.prefetch_related("reviews")
 
 
 class UserDetailView(LoginRequiredMixin, generic.DetailView):

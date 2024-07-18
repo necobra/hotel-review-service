@@ -1,12 +1,15 @@
 <div>
+  <div>
   {{ review.hotel.name }}({{ review.hotel.hotel_class }}), {{ review.hotel_rating }}
-</div>
-<div>
-  {{ review.user.first_name }} {{ review.user.last_name }}
-</div>
-<div>
-  {{ review.caption }}
-</div>
-<div>
-  {{ review.comment }}
+  </div>
+  <div>
+    {{ review.author.first_name }} {{ review.author.last_name }}
+  </div>
+  <div>
+    {{ review.caption }}
+  </div>
+  <div>
+    {{ review.comment }}
+  </div>
+  {% include "hotel_review_service/includes/rate_review_form.html" %}
 </div>
