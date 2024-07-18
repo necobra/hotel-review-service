@@ -13,11 +13,11 @@
   </h1>
   <p>{{ hotel.hotel_class }}</p>
   <p>Location: {{ hotel.placement }}</p>
-  <p>Average rating: ({{ hotel.average_rating }})</p>
+  <p>Average rating: {{ hotel.average_rating }}</p>
   <hr>
   <ul>
     {% for review in hotel.reviews.all %}
-      {% include "hotel_review_service/review_inline.html" %}
+      {% include "hotel_review_service/includes/review_inline.html" %}
     {% endfor %}
   </ul>
 {% endblock %}

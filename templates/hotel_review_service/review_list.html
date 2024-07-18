@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% load review_inline %}
 
 {% block content %}
   <h1>
@@ -10,7 +9,7 @@
       {% for review in review_list %}
         <li>
 {#          <a href="{% url "hotel-review-service:review-detail" pk=review.id %} ">#}
-           {% include "hotel_review_service/review_inline.html" %}
+           {% include "hotel_review_service/includes/review_inline.html" %}
 {#          </a>#}
         </li>
       {% endfor %}

@@ -15,7 +15,7 @@
   <hr>
   <ul>
     {% for review in user.reviews.all %}
-      {% include "hotel_review_service/review_inline.html" %}
+      {% include "hotel_review_service/includes/review_inline.html" %}
     {% endfor %}
   </ul>
 {% endblock %}

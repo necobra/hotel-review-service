@@ -35,7 +35,7 @@ class Hotel(models.Model):
     @property
     def average_rating(self) -> float:
         average = self.reviews.aggregate(
-            hotel_rating=models.Avg("rating")
+            hotel_rating=models.Avg("hotel_rating")
         ).get("hotel_rating")
         return round(average, 1) if average is not None else 0.0
 
@@ -72,12 +72,18 @@ class Review(models.Model):
     caption = models.CharField(max_length=255)
     comment = models.TextField()
     created_at = models.DateField(auto_now_add=True)
-    rating = models.IntegerField(
+    hotel_rating = models.IntegerField(
         validators=[
             validators.MinValueValidator(0),
             validators.MaxValueValidator(10)
         ]
     )
+    likes = models.IntegerField()
+    dislikes = models.IntegerField()
+
+    @property
+    def review_rating(self) -> int:
+        return self.likes - self.dislikes
 
     class Meta:
         ordering = ("caption",)
