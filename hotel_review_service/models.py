@@ -1,7 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.core import validators
 from django.db import models
-from django.db.models import UniqueConstraint
 
 from core import settings
 
@@ -32,13 +31,6 @@ class Hotel(models.Model):
         HotelClass, on_delete=models.DO_NOTHING, related_name="hotels"
     )
 
-    @property
-    def average_rating(self) -> float:
-        average = self.reviews.aggregate(
-            hotel_rating=models.Avg("hotel_rating")
-        ).get("hotel_rating")
-        return round(average, 1) if average is not None else 0.0
-
     class Meta:
         ordering = ("name",)
 
@@ -47,20 +39,22 @@ class Hotel(models.Model):
 
 
 class User(AbstractUser):
-    @property
-    def reviews_amount(self) -> int:
-        return self.reviews.count()
+    reviews_reacted = models.ManyToManyField(
+        "Review",
+        through="UserReviewReaction",
+        related_name="reacted_by"
+    )
 
     @property
     def liked(self) -> list["Review"]:
         return [
-            reviewuser.review for reviewuser in self.reviewuser_set.filter(action="L")
+            user_reactions.review for user_reactions in self.userreviewreaction_set.filter(reaction="L")
         ]
 
     @property
     def disliked(self) -> list["Review"]:
         return [
-            reviewuser.review for reviewuser in self.reviewuser_set.filter(action="D")
+            user_reactions.review for user_reactions in self.userreviewreaction_set.filter(reaction="D")
         ]
 
     class Meta:
@@ -71,10 +65,10 @@ class User(AbstractUser):
 
 
 class Review(models.Model):
-    users = models.ManyToManyField(
+    author = models.ForeignKey(
         settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
         related_name="reviews",
-        through="ReviewUser",
     )
     hotel = models.ForeignKey(
         Hotel,
@@ -93,40 +87,21 @@ class Review(models.Model):
 
     @property
     def review_rating(self) -> int:
-        return self.likes - self.dislikes
-
-    @property
-    def likes(self) -> int:
-        return self.reviewuser_set.filter(action="L").count()
-
-    @property
-    def dislikes(self) -> int:
-        return self.reviewuser_set.filter(action="D").count()
-
-    @property
-    def author(self) -> settings.AUTH_USER_MODEL:
-        return self.reviewuser_set.get(action="A").user
+        return self.like_amount - self.dislike_amount
 
     class Meta:
-        # todo make order by likes
         ordering = ("caption",)
 
     def __str__(self) -> str:
         return self.caption
 
 
-class ReviewUser(models.Model):
-    actions = (
-        ("A", "Author"),
+class UserReviewReaction(models.Model):
+    reactions = (
         ("L", "Liked"),
         ("D", "Disliked")
     )
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     review = models.ForeignKey(Review, on_delete=models.CASCADE)
-    action = models.CharField(max_length=1, choices=actions, null=True)
-
-    class Meta:
-        constraints = [
-            UniqueConstraint(fields=("user", "review"), name="unique_user_review")
-        ]
+    reaction = models.CharField(max_length=1, choices=reactions, null=True)

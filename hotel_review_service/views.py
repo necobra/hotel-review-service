@@ -1,7 +1,9 @@
+from typing import Any
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Avg
+from django.db.models import Avg, Count, Q
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
@@ -36,14 +38,31 @@ class HotelListView(LoginRequiredMixin, generic.ListView):
     queryset = (
         Hotel.objects.select_related("placement", "hotel_class")
         .prefetch_related("reviews")
-        # .annotate(average_rating=Avg("reviews__hotel_rating"))
+        .annotate(average_rating=Avg("reviews__hotel_rating"))
     )
     paginate_by = 5
 
 
 class HotelDetailView(LoginRequiredMixin, generic.DetailView):
     model = Hotel
-    queryset = Hotel.objects.select_related("placement", "hotel_class").prefetch_related("reviews")
+    queryset = (
+        Hotel.objects.select_related("placement", "hotel_class")
+        .prefetch_related("reviews")
+        .annotate(average_rating=Avg("reviews__hotel_rating"))
+    )
+
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["hotel_reviews"] = (
+            context["hotel"].reviews.select_related("hotel", "author")
+            .prefetch_related("reacted_by").annotate(
+                like_amount=Count("userreviewreaction",
+                                  filter=Q(userreviewreaction__reaction="L")),
+                dislike_amount=Count("userreviewreaction",
+                                     filter=Q(userreviewreaction__reaction="D"))
+            )
+        )
+        return context
 
 
 class HotelCreateView(LoginRequiredMixin, generic.CreateView):
@@ -65,7 +84,16 @@ class HotelDeleteView(LoginRequiredMixin, generic.DetailView):
 
 class ReviewListView(LoginRequiredMixin, generic.ListView):
     model = Review
-    queryset = Review.objects.select_related("hotel").prefetch_related("users")
+    queryset = (
+        Review.objects.select_related("hotel", "author")
+        .prefetch_related("reacted_by")
+        .annotate(
+            like_amount=Count("userreviewreaction",
+                              filter=Q(userreviewreaction__reaction="L")),
+            dislike_amount=Count("userreviewreaction",
+                                 filter=Q(userreviewreaction__reaction="D"))
+        )
+    )
     paginate_by = 5
 
 
@@ -93,33 +121,52 @@ class ReviewDeleteView(LoginRequiredMixin, generic.DetailView):
 
 def review_rate(request, pk: int):
     review = get_object_or_404(Review, id=pk)
-    if request.method == 'POST':
+    if request.method == "POST":
         if review.author == request.user:
             HttpResponse(status=100)
             # todo print to user you cannot vote for your review
-        action = request.POST.get('action')
-        if action == 'like':
-            action = "L"
-        elif action == 'dislike':
-            action = "D"
-        review_user, *_ = review.reviewuser_set.get_or_create(user=request.user)
-        if review_user.action == action:
-            review_user.action = None
+        reaction = request.POST.get("reaction")
+        if reaction == "like":
+            reaction = "L"
+        elif reaction == "dislike":
+            reaction = "D"
+        user_review_reaction, *_ = review.userreviewreaction_set.get_or_create(user=request.user)
+        if user_review_reaction.reaction == reaction:
+            user_review_reaction.reaction = None
         else:
-            review_user.action = action
-        review_user.save()
+            user_review_reaction.reaction = reaction
+        user_review_reaction.save()
 
-    return redirect(request.META['HTTP_REFERER'])
+    return redirect(request.META["HTTP_REFERER"])
 
 
 class UserListView(LoginRequiredMixin, generic.ListView):
     model = get_user_model()
     paginate_by = 5
-    queryset = get_user_model().objects.prefetch_related("reviews")
+    queryset = (
+        get_user_model().objects.prefetch_related("reviews")
+        .annotate(reviews_amount=Count("*"))
+    )
 
 
 class UserDetailView(LoginRequiredMixin, generic.DetailView):
     model = get_user_model()
+    queryset = (
+        get_user_model().objects.prefetch_related("reviews")
+    )
+
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["user_reviews"] = (
+            context["object"].reviews.select_related("hotel", "author")
+            .prefetch_related("reacted_by").annotate(
+                like_amount=Count("userreviewreaction",
+                                  filter=Q(userreviewreaction__reaction="L")),
+                dislike_amount=Count("userreviewreaction",
+                                     filter=Q(userreviewreaction__reaction="D"))
+            )
+        )
+        return context
 
 
 class UserCreateView(LoginRequiredMixin, generic.CreateView):
