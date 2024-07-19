@@ -16,7 +16,7 @@
   <p>Average rating: {{ hotel.average_rating }}</p>
   <hr>
   <ul>
-    {% for review in hotel.reviews.all %}
+    {% for review in hotel_reviews %}
       {% include "hotel_review_service/includes/review_inline.html" %}
     {% endfor %}
   </ul>

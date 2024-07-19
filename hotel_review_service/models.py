@@ -90,7 +90,7 @@ class Review(models.Model):
         return self.like_amount - self.dislike_amount
 
     class Meta:
-        ordering = ("caption",)
+        ordering = ("-created_at",)
 
     def __str__(self) -> str:
         return self.caption

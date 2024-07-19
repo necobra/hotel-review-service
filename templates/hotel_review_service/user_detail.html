@@ -14,7 +14,7 @@
   <p>User's reviews amount: {{ user.reviews_amount }}</p>
   <hr>
   <ul>
-    {% for review in user.reviews.all %}
+    {% for review in user_reviews %}
       {% include "hotel_review_service/includes/review_inline.html" %}
     {% endfor %}
   </ul>
