@@ -9,6 +9,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views import generic
 
+from .forms import HotelSearchForm
 from .models import Hotel, Review
 
 
@@ -41,6 +42,14 @@ class HotelListView(LoginRequiredMixin, generic.ListView):
         .annotate(average_rating=Avg("reviews__hotel_rating"))
     )
     paginate_by = 5
+
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        hotel_name = self.request.GET.get("search", "")
+        context["search_form"] = HotelSearchForm(
+            initial={"search_query": hotel_name}
+        )
+        return context
 
 
 class HotelDetailView(LoginRequiredMixin, generic.DetailView):

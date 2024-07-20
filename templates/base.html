@@ -11,11 +11,11 @@
   <link id="pagestyle" href="{% static 'css/material-kit.css' %}" rel="stylesheet"/>
 </head>
 
-<body class="index-page bg-gray-200" >
+<body {% block body %}{% endblock body %} >
 {% block header %}
   {% include 'includes/navigation.html' %}
 {% endblock header %}
-{% block content %}{% endblock %}
+{% block page_structure %}{% endblock %}
 </body>
 
 </html>

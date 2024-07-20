@@ -1,9 +1,16 @@
-{% extends "base.html" %}
+{% extends "hotel_review_service/content_page.html" %}
 
 {% block content %}
   <h1>
     Hotel list
   </h1>
+  
+  <form method="get" action="">
+    {% block search_input %}
+      {% include "includes/search-input.html" %}
+    {% endblock %}
+  </form>
+  
   {% if hotel_list %}
     <ul>
       {% for hotel in hotel_list %}
