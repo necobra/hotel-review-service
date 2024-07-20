@@ -23,10 +23,18 @@
       {% for hotel in hotel_list %}
         <li class="list-group-item border-0 p-3 mb-2 shadow-sm">
             <a href="{% url 'hotel_review_service:hotel-detail' pk=hotel.id %}" class="d-flex justify-content-between align-items-center text-decoration-none">
-                <div class="d-flex align-items-center">
+                <div class="d-flex align-items-center container-fluid">
                     <i class="material-icons-round text-primary mr-2">hotel</i>
-                    <div>
-                        <div class="font-weight-bold text-dark">{{ hotel.name }} {{ hotel.placement }}</div>
+                    <div class="container-fluid">
+                        <div class="font-weight-bold text-dark row container-fluid d-flex align-items-stretch">
+                          <div class="letter-spacing-1 col-2 d-flex align-items-center">{{ hotel.name }}</div>
+                          <div class="ml-3 col-6 d-flex align-items-center">
+                            <i class="material-icons-round fs-4">
+                            location_on
+                            </i>
+                            {{ hotel.placement }}
+                          </div>
+                        </div>
                         <div class="text-muted">Hotel class: {{ hotel.hotel_class }}. Rating: {{ hotel.average_rating|default_if_none:"--" }}</div>
                     </div>
                 </div>
