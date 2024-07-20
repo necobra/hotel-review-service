@@ -10,6 +10,9 @@
   <div class="row">
     {% block content %}
     {% endblock %}
+    {% block pagination %}
+      {% include "includes/pagination.html" %}
+    {% endblock %}
   </div>
 </div>
 {% endblock %}

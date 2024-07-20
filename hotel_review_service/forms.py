@@ -2,7 +2,7 @@ from django import forms
 
 
 class HotelSearchForm(forms.Form):
-    hotel_name = forms.CharField(
+    search = forms.CharField(
         max_length=255,
         required=False,
         label="",

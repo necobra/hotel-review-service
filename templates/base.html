@@ -9,13 +9,19 @@
   <link rel="stylesheet" href="{% static 'css/styles.css' %}">
   <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
   <link id="pagestyle" href="{% static 'css/material-kit.css' %}" rel="stylesheet"/>
+
+  <!-- Material Icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 </head>
 
 <body {% block body %}{% endblock body %} >
 {% block header %}
   {% include 'includes/navigation.html' %}
 {% endblock header %}
-{% block page_structure %}{% endblock %}
+{% block page_structure %}
+  {% block content %}
+  {% endblock %}
+{% endblock %}
 </body>
 
 </html>

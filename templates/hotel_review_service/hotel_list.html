@@ -1,29 +1,39 @@
 {% extends "hotel_review_service/content_page.html" %}
 
 {% block content %}
+
   <h1>
     Hotel list
   </h1>
-  
-  <form method="get" action="">
-    {% block search_input %}
-      {% include "includes/search-input.html" %}
-    {% endblock %}
-  </form>
+  <div class="row">
+    <a href="{% url 'hotel_review_service:hotel-create' %}" class="btn btn-primary link-to-page col-2">
+      Add new hotel
+    </a>
+    <form method="get" action="" class="col-3">
+      {% block search_input %}
+        {% include "includes/search-input.html" %}
+      {% endblock %}
+    </form>
+  </div>
+
+
   
   {% if hotel_list %}
     <ul>
       {% for hotel in hotel_list %}
-        <li>
-          <a href="{% url "hotel_review_service:hotel-detail" pk=hotel.id %} ">
-            <div>
-              {{ hotel.name }} {{ hotel.placement }}
-            </div>
-            <div>
-              Hotel class: {{ hotel.hotel_class }}. Rating: {{ hotel.average_rating }}
-            </div>
-          </a>
+        <li class="list-group-item border-0 p-3 mb-2 shadow-sm">
+            <a href="{% url 'hotel_review_service:hotel-detail' pk=hotel.id %}" class="d-flex justify-content-between align-items-center text-decoration-none">
+                <div class="d-flex align-items-center">
+                    <i class="material-icons-round text-primary mr-2">hotel</i>
+                    <div>
+                        <div class="font-weight-bold text-dark">{{ hotel.name }} {{ hotel.placement }}</div>
+                        <div class="text-muted">Hotel class: {{ hotel.hotel_class }}. Rating: {{ hotel.average_rating|default_if_none:"--" }}</div>
+                    </div>
+                </div>
+                <i class="material-icons-round text-secondary">chevron_right</i>
+            </a>
         </li>
+
       {% endfor %}
     </ul>
   {% else %}

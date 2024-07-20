@@ -36,20 +36,26 @@ def index(request):
 
 class HotelListView(LoginRequiredMixin, generic.ListView):
     model = Hotel
-    queryset = (
-        Hotel.objects.select_related("placement", "hotel_class")
-        .prefetch_related("reviews")
-        .annotate(average_rating=Avg("reviews__hotel_rating"))
-    )
     paginate_by = 5
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         hotel_name = self.request.GET.get("search", "")
         context["search_form"] = HotelSearchForm(
-            initial={"search_query": hotel_name}
+            initial={"hotel_name": hotel_name}
         )
         return context
+
+    def get_queryset(self):
+        queryset = (
+            Hotel.objects.select_related("placement", "hotel_class")
+            .prefetch_related("reviews")
+            .annotate(average_rating=Avg("reviews__hotel_rating"))
+        )
+        form = HotelSearchForm(self.request.GET)
+        if form.is_valid():
+            return queryset.filter(name__icontains=form.cleaned_data["search"])
+        return queryset
 
 
 class HotelDetailView(LoginRequiredMixin, generic.DetailView):
