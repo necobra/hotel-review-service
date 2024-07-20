@@ -9,8 +9,11 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views import generic
 
-from .forms import HotelSearchForm
-from .models import Hotel, Review
+from .forms import (
+    HotelSearchForm,
+    HotelForm,
+)
+from .models import (Hotel, Review, Placement)
 
 
 @login_required
@@ -82,8 +85,21 @@ class HotelDetailView(LoginRequiredMixin, generic.DetailView):
 
 class HotelCreateView(LoginRequiredMixin, generic.CreateView):
     model = Hotel
-    fields = "__all__"
+    form_class = HotelForm
     success_url = reverse_lazy("hotel_review_service:hotel-list")
+
+    def form_valid(self, form):
+        hotel = form.save(commit=False)
+
+        contry = form.cleaned_data["country"]
+        city = form.cleaned_data["city"]
+        adress = form.cleaned_data["adress"]
+        placement = Placement.objects.create(country=contry, city=city, adress=adress)
+
+        hotel.placement = placement
+        hotel.save()
+
+        return super().form_valid(form)
 
 
 class HotelUpdateView(LoginRequiredMixin, generic.UpdateView):
