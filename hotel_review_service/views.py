@@ -11,7 +11,7 @@ from django.views import generic
 
 from .forms import (
     HotelSearchForm,
-    HotelForm,
+    HotelForm, ReviewSearchForm, UserSearchForm, ReviewForm,
 )
 from .models import (Hotel, Review, Placement)
 
@@ -131,17 +131,33 @@ class HotelDeleteView(LoginRequiredMixin, generic.DeleteView):
 
 class ReviewListView(LoginRequiredMixin, generic.ListView):
     model = Review
-    queryset = (
-        Review.objects.select_related("hotel", "author")
-        .prefetch_related("reacted_by")
-        .annotate(
-            like_amount=Count("userreviewreaction",
-                              filter=Q(userreviewreaction__reaction="L")),
-            dislike_amount=Count("userreviewreaction",
-                                 filter=Q(userreviewreaction__reaction="D"))
-        )
-    )
+
     paginate_by = 5
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        search = self.request.GET.get("search", "")
+        context["search_form"] = ReviewSearchForm(
+            initial={"search": search}
+        )
+        return context
+
+    def get_queryset(self):
+        queryset = (
+            Review.objects.select_related("hotel", "author")
+            .prefetch_related("reacted_by")
+            .annotate(
+                like_amount=Count("userreviewreaction",
+                                  filter=Q(userreviewreaction__reaction="L")),
+                dislike_amount=Count("userreviewreaction",
+                                     filter=Q(userreviewreaction__reaction="D"))
+            )
+        )
+        form = ReviewSearchForm(self.request.GET)
+        if form.is_valid():
+            search = form.cleaned_data["search"]
+            return queryset.filter(Q(caption__icontains=search) | Q(comment__icontains=search))
+        return queryset
 
 
 class ReviewDetailView(LoginRequiredMixin, generic.DetailView):
@@ -151,15 +167,26 @@ class ReviewDetailView(LoginRequiredMixin, generic.DetailView):
 
 class ReviewCreateView(LoginRequiredMixin, generic.CreateView):
     model = Review
-    fields = "__all__"
+    form_class = ReviewForm
     success_url = reverse_lazy("hotel_review_service:review-list")
+
+    def form_valid(self, form):
+        review = form.save(commit=False)
+
+        review.author = self.request.user
+        review.hotel = get_object_or_404(Hotel, id=self.kwargs["pk"])
+
+        review.save()
+
+        return super().form_valid(form)
 
 
 class ReviewUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Review
-    fields = "__all__"
+    fields = ["caption", "comment", "hotel_rating"]
     success_url = reverse_lazy("hotel_review_service:review-list")
 
+    template_name = "hotel_review_service/review_confirm_delete.html"
 
 class ReviewDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Review
@@ -190,16 +217,32 @@ def review_rate(request, pk: int):
 class UserListView(LoginRequiredMixin, generic.ListView):
     model = get_user_model()
     paginate_by = 5
-    queryset = (
-        get_user_model().objects.prefetch_related("reviews")
-        .annotate(reviews_amount=Count("*"))
-    )
+
+    def get_context_data(self, **kwargs) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        search = self.request.GET.get("search", "")
+        context["search_form"] = UserSearchForm(
+            initial={"search": search}
+        )
+        return context
+
+    def get_queryset(self):
+        queryset = (
+            get_user_model().objects.prefetch_related("reviews")
+            .annotate(reviews_amount=Count("*"))
+        )
+        form = UserSearchForm(self.request.GET)
+        if form.is_valid():
+            search = form.cleaned_data["search"]
+            return queryset.filter(Q(first_name__icontains=search) | Q(last_name__icontains=search))
+        return queryset
 
 
 class UserDetailView(LoginRequiredMixin, generic.DetailView):
     model = get_user_model()
     queryset = (
         get_user_model().objects.prefetch_related("reviews")
+        .annotate(reviews_amount=Count("*"))
     )
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
