@@ -197,8 +197,7 @@ def review_rate(request, pk: int):
     review = get_object_or_404(Review, id=pk)
     if request.method == "POST":
         if review.author == request.user:
-            HttpResponse(status=100)
-            # todo print to user you cannot vote for your review
+            return HttpResponse(status=400)
         reaction = request.POST.get("reaction")
         if reaction == "like":
             reaction = "L"
