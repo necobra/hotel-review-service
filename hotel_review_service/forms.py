@@ -36,6 +36,7 @@ class ReviewForm(forms.ModelForm):
         model = Review
         fields = ["caption", "comment", "hotel_rating"]
 
+
 class ReviewSearchForm(forms.Form):
     search = forms.CharField(
         max_length=255,

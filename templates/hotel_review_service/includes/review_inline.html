@@ -1,15 +1,26 @@
-<div>
-  <div>
-  {{ review.hotel.name }}({{ review.hotel.hotel_class }}), {{ review.hotel_rating }}/10
-  </div>
-  <div>
-    {{ review.author.first_name }} {{ review.author.last_name }}
-  </div>
-  <div>
-    {{ review.caption }}
-  </div>
-  <div>
-    {{ review.comment }}
-  </div>
-  {% include "hotel_review_service/includes/rate_review_form.html" %}
+<div class="bg-light p-3 mb-4 rounded shadow-sm">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <div class="text-dark">
+            <strong>{{ review.hotel.name }} ({{ review.hotel.hotel_class }}), {{ review.hotel_rating }}/10</strong>
+        </div>
+        <div class="dropleft">
+            <button class="btn btn-light p-0" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="material-icons-round">more_vert</i>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="{% url 'hotel_review_service:review-update' pk=review.id %}">Edit</a>
+                <a class="dropdown-item" href="{% url 'hotel_review_service:review-delete' pk=review.id %}">Delete</a>
+            </div>
+        </div>
+    </div>
+    <div class="text-muted mb-2">
+        {{ review.author.first_name }} {{ review.author.last_name }}
+    </div>
+    <div class="font-weight-bold mb-2">
+        {{ review.caption }}
+    </div>
+    <div class="mb-2">
+        {{ review.comment }}
+    </div>
+    {% include "hotel_review_service/includes/rate_review_form.html" %}
 </div>
