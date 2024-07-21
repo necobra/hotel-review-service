@@ -43,9 +43,9 @@ class HotelListView(LoginRequiredMixin, generic.ListView):
 
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        hotel_name = self.request.GET.get("search", "")
+        search = self.request.GET.get("search", "")
         context["search_form"] = HotelSearchForm(
-            initial={"hotel_name": hotel_name}
+            initial={"search": search}
         )
         return context
 
@@ -228,7 +228,7 @@ class UserListView(LoginRequiredMixin, generic.ListView):
     def get_queryset(self):
         queryset = (
             get_user_model().objects.prefetch_related("reviews")
-            .annotate(reviews_amount=Count("*"))
+            .annotate(reviews_amount=Count("reviews"))
         )
         form = UserSearchForm(self.request.GET)
         if form.is_valid():

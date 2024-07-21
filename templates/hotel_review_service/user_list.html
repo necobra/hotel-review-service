@@ -10,17 +10,17 @@
     </form>
     {% if user_list %}
       <ul class="list-group mt-2">
-        {% for user in user_list %}
+        {% for user_stat in user_list %}
           <li class="list-group-item d-flex align-items-center mb-1">
             {% load static %}
             <img src="{% static 'img/avatar.png' %}" alt="Avatar" class="rounded-circle mr-3"
                  style="width: 50px; height: 50px;">
             <div class="flex-grow-1">
-              <a href="{% url 'hotel-review-service:user-detail' pk=user.id %}" class="text-dark font-weight-bold">
-                {{ user.first_name }} {{ user.last_name }}
+              <a href="{% url 'hotel-review-service:user-detail' pk=user_stat.id %}" class="text-dark font-weight-bold">
+                {{ user_stat.first_name }} {{ user_stat.last_name }}
               </a>
               <div class="text-muted">
-                Reviews: {{ user.reviews_amount }}
+                Reviews: {{ user_stat.reviews_amount }}
               </div>
             </div>
           </li>
