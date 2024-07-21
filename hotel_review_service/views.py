@@ -104,13 +104,29 @@ class HotelCreateView(LoginRequiredMixin, generic.CreateView):
 
 class HotelUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Hotel
-    fields = "__all__"
+    form_class = HotelForm
     success_url = reverse_lazy("hotel_review_service:hotel-list")
 
+    def form_valid(self, form):
+        hotel = form.save(commit=False)
 
-class HotelDeleteView(LoginRequiredMixin, generic.DetailView):
+        contry = form.cleaned_data["country"]
+        city = form.cleaned_data["city"]
+        adress = form.cleaned_data["adress"]
+        placement = Placement.objects.create(country=contry, city=city, adress=adress)
+
+        hotel.placement.delete()
+
+        hotel.placement = placement
+        hotel.save()
+
+        return super().form_valid(form)
+
+
+class HotelDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Hotel
     success_url = reverse_lazy("hotel_review_service:hotel-list")
+    template_name = "hotel_review_service/hotel_confirm_delete.html"
 
 
 class ReviewListView(LoginRequiredMixin, generic.ListView):
@@ -145,7 +161,7 @@ class ReviewUpdateView(LoginRequiredMixin, generic.UpdateView):
     success_url = reverse_lazy("hotel_review_service:review-list")
 
 
-class ReviewDeleteView(LoginRequiredMixin, generic.DetailView):
+class ReviewDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Review
     success_url = reverse_lazy("hotel_review_service:review-list")
 
@@ -212,6 +228,6 @@ class UserUpdateView(LoginRequiredMixin, generic.UpdateView):
     success_url = reverse_lazy("hotel_review_service:user-list")
 
 
-class UserDeleteView(LoginRequiredMixin, generic.DetailView):
+class UserDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Hotel
     success_url = reverse_lazy("hotel_review_service:user-list")

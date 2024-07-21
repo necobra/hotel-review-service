@@ -12,6 +12,16 @@ class HotelForm(forms.ModelForm):
         model = Hotel
         fields = ["name", "hotel_class"]
 
+    def __init__(self, *args, **kwargs):
+        if "instance" in kwargs and kwargs["instance"]:
+            hotel = kwargs["instance"]
+            initial = kwargs["initial"]
+            initial["country"] = hotel.placement.country
+            initial["city"] = hotel.placement.city
+            initial["adress"] = hotel.placement.adress
+
+        super().__init__(*args, **kwargs)
+
 
 class HotelSearchForm(forms.Form):
     search = forms.CharField(
