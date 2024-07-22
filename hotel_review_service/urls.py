@@ -3,9 +3,6 @@ from django.urls import path
 from hotel_review_service.views import (
     UserListView,
     UserDetailView,
-    UserUpdateView,
-    UserDeleteView,
-    UserCreateView,
     ReviewListView,
     ReviewDetailView,
     ReviewUpdateView,
@@ -19,6 +16,7 @@ from hotel_review_service.views import (
     index,
     review_rate
 )
+
 
 urlpatterns = [
     path("", index, name="index"),

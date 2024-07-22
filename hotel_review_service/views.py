@@ -3,17 +3,24 @@ from typing import Any
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Avg, Count, Q
-from django.http import HttpResponse
+from django.db.models import Avg, Count, Q, QuerySet, Manager
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views import generic
 
-from .forms import (
+from hotel_review_service.forms import (
     HotelSearchForm,
-    HotelForm, ReviewSearchForm, UserSearchForm, ReviewForm,
+    HotelForm,
+    ReviewSearchForm,
+    UserSearchForm,
+    ReviewForm,
 )
-from .models import (Hotel, Review, Placement)
+from hotel_review_service.models import (
+    Hotel,
+    Review,
+    Placement
+)
 
 
 @login_required
@@ -41,7 +48,7 @@ class HotelListView(LoginRequiredMixin, generic.ListView):
     model = Hotel
     paginate_by = 5
 
-    def get_context_data(self, **kwargs) -> dict[str, Any]:
+    def get_context_data(self, *, object_list=None, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         search = self.request.GET.get("search", "")
         context["search_form"] = HotelSearchForm(
@@ -49,7 +56,7 @@ class HotelListView(LoginRequiredMixin, generic.ListView):
         )
         return context
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         queryset = (
             Hotel.objects.select_related("placement", "hotel_class")
             .prefetch_related("reviews")
@@ -69,16 +76,10 @@ class HotelDetailView(LoginRequiredMixin, generic.DetailView):
         .annotate(average_rating=Avg("reviews__hotel_rating"))
     )
 
-    def get_context_data(self, **kwargs) -> dict[str, Any]:
+    def get_context_data(self, *, object_list=None, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         context["hotel_reviews"] = (
-            context["hotel"].reviews.select_related("hotel", "author")
-            .prefetch_related("reacted_by").annotate(
-                like_amount=Count("userreviewreaction",
-                                  filter=Q(userreviewreaction__reaction="L")),
-                dislike_amount=Count("userreviewreaction",
-                                     filter=Q(userreviewreaction__reaction="D"))
-            )
+            get_reviews_with_calculated_fields(context["hotel"].reviews)
         )
         return context
 
@@ -88,13 +89,15 @@ class HotelCreateView(LoginRequiredMixin, generic.CreateView):
     form_class = HotelForm
     success_url = reverse_lazy("hotel_review_service:hotel-list")
 
-    def form_valid(self, form):
+    def form_valid(self, form) -> HttpResponseRedirect:
         hotel = form.save(commit=False)
 
         contry = form.cleaned_data["country"]
         city = form.cleaned_data["city"]
         adress = form.cleaned_data["adress"]
-        placement = Placement.objects.create(country=contry, city=city, adress=adress)
+        placement = Placement.objects.create(country=contry,
+                                             city=city,
+                                             adress=adress)
 
         hotel.placement = placement
         hotel.save()
@@ -107,13 +110,15 @@ class HotelUpdateView(LoginRequiredMixin, generic.UpdateView):
     form_class = HotelForm
     success_url = reverse_lazy("hotel_review_service:hotel-list")
 
-    def form_valid(self, form):
+    def form_valid(self, form) -> HttpResponseRedirect:
         hotel = form.save(commit=False)
 
         contry = form.cleaned_data["country"]
         city = form.cleaned_data["city"]
         adress = form.cleaned_data["adress"]
-        placement = Placement.objects.create(country=contry, city=city, adress=adress)
+        placement = Placement.objects.create(country=contry,
+                                             city=city,
+                                             adress=adress)
 
         hotel.placement.delete()
 
@@ -134,7 +139,7 @@ class ReviewListView(LoginRequiredMixin, generic.ListView):
 
     paginate_by = 5
 
-    def get_context_data(self, *, object_list=None, **kwargs):
+    def get_context_data(self, *, object_list=None, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         search = self.request.GET.get("search", "")
         context["search_form"] = ReviewSearchForm(
@@ -142,21 +147,15 @@ class ReviewListView(LoginRequiredMixin, generic.ListView):
         )
         return context
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         queryset = (
-            Review.objects.select_related("hotel", "author")
-            .prefetch_related("reacted_by")
-            .annotate(
-                like_amount=Count("userreviewreaction",
-                                  filter=Q(userreviewreaction__reaction="L")),
-                dislike_amount=Count("userreviewreaction",
-                                     filter=Q(userreviewreaction__reaction="D"))
-            )
+            get_reviews_with_calculated_fields(Review.objects)
         )
         form = ReviewSearchForm(self.request.GET)
         if form.is_valid():
             search = form.cleaned_data["search"]
-            return queryset.filter(Q(caption__icontains=search) | Q(comment__icontains=search))
+            return queryset.filter(Q(caption__icontains=search)
+                                   | Q(comment__icontains=search))
         return queryset
 
 
@@ -170,7 +169,7 @@ class ReviewCreateView(LoginRequiredMixin, generic.CreateView):
     form_class = ReviewForm
     success_url = reverse_lazy("hotel_review_service:review-list")
 
-    def form_valid(self, form):
+    def form_valid(self, form) -> HttpResponseRedirect:
         review = form.save(commit=False)
 
         review.author = self.request.user
@@ -188,6 +187,7 @@ class ReviewUpdateView(LoginRequiredMixin, generic.UpdateView):
 
     template_name = "hotel_review_service/review_confirm_delete.html"
 
+
 class ReviewDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Review
     success_url = reverse_lazy("hotel_review_service:review-list")
@@ -203,7 +203,8 @@ def review_rate(request, pk: int):
             reaction = "L"
         elif reaction == "dislike":
             reaction = "D"
-        user_review_reaction, *_ = review.userreviewreaction_set.get_or_create(user=request.user)
+        user_review_reaction, *_ = (review.userreviewreaction_set
+                                    .get_or_create(user=request.user))
         if user_review_reaction.reaction == reaction:
             user_review_reaction.reaction = None
         else:
@@ -217,7 +218,7 @@ class UserListView(LoginRequiredMixin, generic.ListView):
     model = get_user_model()
     paginate_by = 5
 
-    def get_context_data(self, **kwargs) -> dict[str, Any]:
+    def get_context_data(self, *, object_list=None, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         search = self.request.GET.get("search", "")
         context["search_form"] = UserSearchForm(
@@ -225,7 +226,7 @@ class UserListView(LoginRequiredMixin, generic.ListView):
         )
         return context
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         queryset = (
             get_user_model().objects.prefetch_related("reviews")
             .annotate(reviews_amount=Count("reviews"))
@@ -233,7 +234,8 @@ class UserListView(LoginRequiredMixin, generic.ListView):
         form = UserSearchForm(self.request.GET)
         if form.is_valid():
             search = form.cleaned_data["search"]
-            return queryset.filter(Q(first_name__icontains=search) | Q(last_name__icontains=search))
+            return queryset.filter(Q(first_name__icontains=search)
+                                   | Q(last_name__icontains=search))
         return queryset
 
 
@@ -244,16 +246,10 @@ class UserDetailView(LoginRequiredMixin, generic.DetailView):
         .annotate(reviews_amount=Count("*"))
     )
 
-    def get_context_data(self, **kwargs) -> dict[str, Any]:
+    def get_context_data(self, *, object_list=None, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         context["user_reviews"] = (
-            context["object"].reviews.select_related("hotel", "author")
-            .prefetch_related("reacted_by").annotate(
-                like_amount=Count("userreviewreaction",
-                                  filter=Q(userreviewreaction__reaction="L")),
-                dislike_amount=Count("userreviewreaction",
-                                     filter=Q(userreviewreaction__reaction="D"))
-            )
+            get_reviews_with_calculated_fields(context["object"].reviews)
         )
         return context
 
@@ -273,3 +269,14 @@ class UserUpdateView(LoginRequiredMixin, generic.UpdateView):
 class UserDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Hotel
     success_url = reverse_lazy("hotel_review_service:user-list")
+
+
+def get_reviews_with_calculated_fields(reviews: Manager) -> QuerySet:
+    return (
+        reviews.select_related("hotel", "author")
+        .prefetch_related("reacted_by").annotate(
+            like_amount=Count("userreviewreaction",
+                              filter=Q(userreviewreaction__reaction="L")),
+            dislike_amount=Count("userreviewreaction",
+                                 filter=Q(userreviewreaction__reaction="D"))
+        ))

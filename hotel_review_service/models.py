@@ -48,13 +48,17 @@ class User(AbstractUser):
     @property
     def liked(self) -> list["Review"]:
         return [
-            user_reactions.review for user_reactions in self.userreviewreaction_set.filter(reaction="L")
+            user_reactions.review
+            for user_reactions
+            in self.userreviewreaction_set.filter(reaction="L")
         ]
 
     @property
     def disliked(self) -> list["Review"]:
         return [
-            user_reactions.review for user_reactions in self.userreviewreaction_set.filter(reaction="D")
+            user_reactions.review
+            for user_reactions
+            in self.userreviewreaction_set.filter(reaction="D")
         ]
 
     class Meta:
@@ -102,6 +106,7 @@ class UserReviewReaction(models.Model):
         ("D", "Disliked")
     )
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE)
     review = models.ForeignKey(Review, on_delete=models.CASCADE)
     reaction = models.CharField(max_length=1, choices=reactions, null=True)
