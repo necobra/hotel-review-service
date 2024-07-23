@@ -3,7 +3,7 @@ from typing import Any
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Avg, Count, Q, QuerySet, Manager
+from django.db.models import Avg, Count, Q, QuerySet
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
@@ -21,6 +21,7 @@ from hotel_review_service.models import (
     Review,
     Placement
 )
+from hotel_review_service.utils import get_reviews_with_calculated_fields
 
 
 @login_required
@@ -31,14 +32,10 @@ def index(request):
     num_hotels = Hotel.objects.count()
     num_reviews = Review.objects.count()
 
-    num_visits = request.session.get("num_visits", 0)
-    request.session["num_visits"] = num_visits + 1
-
     context = {
         "num_users": num_users,
         "num_hotels": num_hotels,
         "num_reviews": num_reviews,
-        "num_visits": num_visits + 1,
     }
 
     return render(request, "hotel_review_service/index.html", context=context)
@@ -61,6 +58,7 @@ class HotelListView(LoginRequiredMixin, generic.ListView):
             Hotel.objects.select_related("placement", "hotel_class")
             .prefetch_related("reviews")
             .annotate(average_rating=Avg("reviews__hotel_rating"))
+            .order_by("name")
         )
         form = HotelSearchForm(self.request.GET)
         if form.is_valid():
@@ -94,10 +92,10 @@ class HotelCreateView(LoginRequiredMixin, generic.CreateView):
 
         contry = form.cleaned_data["country"]
         city = form.cleaned_data["city"]
-        adress = form.cleaned_data["adress"]
+        address = form.cleaned_data["address"]
         placement = Placement.objects.create(country=contry,
                                              city=city,
-                                             adress=adress)
+                                             address=address)
 
         hotel.placement = placement
         hotel.save()
@@ -115,10 +113,10 @@ class HotelUpdateView(LoginRequiredMixin, generic.UpdateView):
 
         contry = form.cleaned_data["country"]
         city = form.cleaned_data["city"]
-        adress = form.cleaned_data["adress"]
+        address = form.cleaned_data["address"]
         placement = Placement.objects.create(country=contry,
                                              city=city,
-                                             adress=adress)
+                                             address=address)
 
         hotel.placement.delete()
 
@@ -230,6 +228,7 @@ class UserListView(LoginRequiredMixin, generic.ListView):
         queryset = (
             get_user_model().objects.prefetch_related("reviews")
             .annotate(reviews_amount=Count("reviews"))
+            .order_by("first_name", "last_name")
         )
         form = UserSearchForm(self.request.GET)
         if form.is_valid():
@@ -269,14 +268,3 @@ class UserUpdateView(LoginRequiredMixin, generic.UpdateView):
 class UserDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Hotel
     success_url = reverse_lazy("hotel_review_service:user-list")
-
-
-def get_reviews_with_calculated_fields(reviews: Manager) -> QuerySet:
-    return (
-        reviews.select_related("hotel", "author")
-        .prefetch_related("reacted_by").annotate(
-            like_amount=Count("userreviewreaction",
-                              filter=Q(userreviewreaction__reaction="L")),
-            dislike_amount=Count("userreviewreaction",
-                                 filter=Q(userreviewreaction__reaction="D"))
-        ))

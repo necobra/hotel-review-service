@@ -7,7 +7,7 @@ from core import settings
 
 class HotelClass(models.Model):
     name = models.CharField(max_length=255, unique=True)
-    description = models.TextField()
+    description = models.TextField(null=True)
 
     def __str__(self) -> str:
         return self.name
@@ -16,10 +16,10 @@ class HotelClass(models.Model):
 class Placement(models.Model):
     country = models.CharField(max_length=255)
     city = models.CharField(max_length=255)
-    adress = models.CharField(max_length=255)
+    address = models.CharField(max_length=255)
 
     def __str__(self) -> str:
-        return f"{self.country}, {self.city}, {self.adress}"
+        return f"{self.country}, {self.city}, {self.address}"
 
 
 class Hotel(models.Model):
@@ -91,7 +91,13 @@ class Review(models.Model):
 
     @property
     def review_rating(self) -> int:
-        return self.like_amount - self.dislike_amount
+        like_amount = 0
+        dislike_amount = 0
+        if hasattr(self, "like_amount"):
+            like_amount = self.like_amount
+        if hasattr(self, "dislike_amount"):
+            dislike_amount = self.dislike_amount
+        return like_amount - dislike_amount
 
     class Meta:
         ordering = ("-created_at",)

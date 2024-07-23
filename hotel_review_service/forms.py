@@ -6,7 +6,7 @@ from hotel_review_service.models import Hotel, Review
 class HotelForm(forms.ModelForm):
     country = forms.CharField(max_length=255)
     city = forms.CharField(max_length=255)
-    adress = forms.CharField(max_length=255)
+    address = forms.CharField(max_length=255)
 
     class Meta:
         model = Hotel
@@ -15,10 +15,10 @@ class HotelForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         if "instance" in kwargs and kwargs["instance"]:
             hotel = kwargs["instance"]
-            initial = kwargs["initial"]
+            initial = kwargs.setdefault("initial", {})
             initial["country"] = hotel.placement.country
             initial["city"] = hotel.placement.city
-            initial["adress"] = hotel.placement.adress
+            initial["address"] = hotel.placement.address
 
         super().__init__(*args, **kwargs)
 
