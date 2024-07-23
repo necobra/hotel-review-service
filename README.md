@@ -2,7 +2,11 @@
 
 ## Check it out!
 
-[Hotel review service project deployed to Render](https://hotel-review-service-cyp5.onrender.com/)
+[Hotel review service project deployed to Render](https://hotel-review-service-cyp5.onrender.com/)<br>
+test user credits:<br>
+username: admin <br>
+password: qwerty123
+
 
 ## Installation
 
