@@ -1,0 +1,559 @@
+[
+  {
+    "model": "hotel_review_service.hotelclass",
+    "pk": 1,
+    "fields": {
+      "name": "Five Star",
+      "description": "Luxury hotel with top-notch facilities and services."
+    }
+  },
+  {
+    "model": "hotel_review_service.hotelclass",
+    "pk": 2,
+    "fields": {
+      "name": "Four Star",
+      "description": "Comfortable hotel with many amenities."
+    }
+  },
+  {
+    "model": "hotel_review_service.hotelclass",
+    "pk": 3,
+    "fields": {
+      "name": "Three Star",
+      "description": "Average hotel with standard services."
+    }
+  },
+  {
+    "model": "hotel_review_service.hotelclass",
+    "pk": 4,
+    "fields": {
+      "name": "Two Star",
+      "description": "Basic hotel with limited services."
+    }
+  },
+  {
+    "model": "hotel_review_service.hotelclass",
+    "pk": 5,
+    "fields": {
+      "name": "One Star",
+      "description": "Simple hotel with minimum facilities."
+    }
+  },
+  {
+    "model": "hotel_review_service.placement",
+    "pk": 1,
+    "fields": {
+      "country": "Ukraine",
+      "city": "Kyiv",
+      "address": "1234 Khreshchatyk St"
+    }
+  },
+  {
+    "model": "hotel_review_service.placement",
+    "pk": 2,
+    "fields": {
+      "country": "Ukraine",
+      "city": "Lviv",
+      "address": "4321 Lychakivska St"
+    }
+  },
+  {
+    "model": "hotel_review_service.placement",
+    "pk": 3,
+    "fields": {
+      "country": "Ukraine",
+      "city": "Odessa",
+      "address": "5678 Deribasivska St"
+    }
+  },
+  {
+    "model": "hotel_review_service.placement",
+    "pk": 4,
+    "fields": {
+      "country": "Ukraine",
+      "city": "Kharkiv",
+      "address": "8765 Sumskaya St"
+    }
+  },
+  {
+    "model": "hotel_review_service.placement",
+    "pk": 5,
+    "fields": {
+      "country": "Ukraine",
+      "city": "Dnipro",
+      "address": "1234 Gagarina Ave"
+    }
+  },
+  {
+    "model": "hotel_review_service.placement",
+    "pk": 6,
+    "fields": {
+      "country": "Ukraine",
+      "city": "Zaporizhzhia",
+      "address": "4321 Sobornyi Ave"
+    }
+  },
+  {
+    "model": "hotel_review_service.hotel",
+    "pk": 1,
+    "fields": {
+      "name": "Hotel Kyiv",
+      "placement": 1,
+      "hotel_class": 1
+    }
+  },
+  {
+    "model": "hotel_review_service.hotel",
+    "pk": 2,
+    "fields": {
+      "name": "Hotel Lviv",
+      "placement": 2,
+      "hotel_class": 2
+    }
+  },
+  {
+    "model": "hotel_review_service.hotel",
+    "pk": 3,
+    "fields": {
+      "name": "Hotel Odessa",
+      "placement": 3,
+      "hotel_class": 3
+    }
+  },
+  {
+    "model": "hotel_review_service.hotel",
+    "pk": 4,
+    "fields": {
+      "name": "Hotel Kharkiv",
+      "placement": 4,
+      "hotel_class": 4
+    }
+  },
+  {
+    "model": "hotel_review_service.hotel",
+    "pk": 5,
+    "fields": {
+      "name": "Hotel Dnipro",
+      "placement": 5,
+      "hotel_class": 5
+    }
+  },
+  {
+    "model": "hotel_review_service.hotel",
+    "pk": 6,
+    "fields": {
+      "name": "Hotel Zaporizhzhia",
+      "placement": 6,
+      "hotel_class": 1
+    }
+  },
+  {
+    "model": "hotel_review_service.user",
+    "pk": 1,
+    "fields": {
+      "username": "admin",
+      "email": "admin@example.com",
+      "first_name": "Admin",
+      "last_name": "User",
+      "is_staff": true,
+      "is_active": true,
+      "is_superuser": true,
+      "password": "pbkdf2_sha256$720000$AfAt0i1N7cHzxUpuV1D7gY$DdGaskyoUymNqAQknAeXkbQ1I14AJfGCSkw24zVEqNA"
+    }
+  },
+  {
+    "model": "hotel_review_service.user",
+    "pk": 2,
+    "fields": {
+      "username": "user1",
+      "email": "user1@example.com",
+      "first_name": "User",
+      "last_name": "One",
+      "is_staff": false,
+      "is_active": true,
+      "is_superuser": false,
+      "password": "pbkdf2_sha256$260000$5678$efgh"
+    }
+  },
+  {
+    "model": "hotel_review_service.user",
+    "pk": 3,
+    "fields": {
+      "username": "user2",
+      "email": "user2@example.com",
+      "first_name": "User",
+      "last_name": "Two",
+      "is_staff": false,
+      "is_active": true,
+      "is_superuser": false,
+      "password": "pbkdf2_sha256$260000$9101$ijkl"
+    }
+  },
+  {
+    "model": "hotel_review_service.user",
+    "pk": 4,
+    "fields": {
+      "username": "user3",
+      "email": "user3@example.com",
+      "first_name": "User",
+      "last_name": "Three",
+      "is_staff": false,
+      "is_active": true,
+      "is_superuser": false,
+      "password": "pbkdf2_sha256$260000$1121$mnop"
+    }
+  },
+  {
+    "model": "hotel_review_service.user",
+    "pk": 5,
+    "fields": {
+      "username": "user4",
+      "email": "user4@example.com",
+      "first_name": "User",
+      "last_name": "Four",
+      "is_staff": false,
+      "is_active": true,
+      "is_superuser": false,
+      "password": "pbkdf2_sha256$260000$3141$qrst"
+    }
+  },
+  {
+    "model": "hotel_review_service.user",
+    "pk": 6,
+    "fields": {
+      "username": "user5",
+      "email": "user5@example.com",
+      "first_name": "User",
+      "last_name": "Five",
+      "is_staff": false,
+      "is_active": true,
+      "is_superuser": false,
+      "password": "pbkdf2_sha256$260000$5161$uvwx"
+    }
+  },
+  {
+    "model": "hotel_review_service.user",
+    "pk": 7,
+    "fields": {
+      "username": "user6",
+      "email": "user6@example.com",
+      "first_name": "User",
+      "last_name": "Six",
+      "is_staff": false,
+      "is_active": true,
+      "is_superuser": false,
+      "password": "pbkdf2_sha256$260000$7181$yzab"
+    }
+  },
+  {
+    "model": "hotel_review_service.user",
+    "pk": 8,
+    "fields": {
+      "username": "user7",
+      "email": "user7@example.com",
+      "first_name": "User",
+      "last_name": "Seven",
+      "is_staff": false,
+      "is_active": true,
+      "is_superuser": false,
+      "password": "pbkdf2_sha256$260000$9202$cdef"
+    }
+  },
+  {
+    "model": "hotel_review_service.user",
+    "pk": 9,
+    "fields": {
+      "username": "user8",
+      "email": "user8@example.com",
+      "first_name": "User",
+      "last_name": "Eight",
+      "is_staff": false,
+      "is_active": true,
+      "is_superuser": false,
+      "password": "pbkdf2_sha256$260000$1022$ghij"
+    }
+  },
+  {
+    "model": "hotel_review_service.review",
+    "pk": 1,
+    "fields": {
+      "author": 1,
+      "hotel": 1,
+      "caption": "Great stay!",
+      "comment": "The hotel was fantastic with great service.",
+      "created_at": "2023-01-01",
+      "hotel_rating": 9
+    }
+  },
+  {
+    "model": "hotel_review_service.review",
+    "pk": 2,
+    "fields": {
+      "author": 2,
+      "hotel": 2,
+      "caption": "Good experience",
+      "comment": "Nice place to stay with good amenities.",
+      "created_at": "2023-01-02",
+      "hotel_rating": 8
+    }
+  },
+  {
+    "model": "hotel_review_service.review",
+    "pk": 3,
+    "fields": {
+      "author": 3,
+      "hotel": 3,
+      "caption": "Average stay",
+      "comment": "It was okay, nothing special.",
+      "created_at": "2023-01-03",
+      "hotel_rating": 6
+    }
+  },
+  {
+    "model": "hotel_review_service.review",
+    "pk": 4,
+    "fields": {
+      "author": 4,
+      "hotel": 4,
+      "caption": "Not bad",
+      "comment": "Could have been better, but overall fine.",
+      "created_at": "2023-01-04",
+      "hotel_rating": 7
+    }
+  },
+  {
+    "model": "hotel_review_service.review",
+    "pk": 5,
+    "fields": {
+      "author": 5,
+      "hotel": 5,
+      "caption": "Poor service",
+      "comment": "Service was not up to the mark.",
+      "created_at": "2023-01-05",
+      "hotel_rating": 4
+    }
+  },
+  {
+    "model": "hotel_review_service.review",
+    "pk": 6,
+    "fields": {
+      "author": 6,
+      "hotel": 6,
+      "caption": "Nice hotel",
+      "comment": "Enjoyed my stay here.",
+      "created_at": "2023-01-06",
+      "hotel_rating": 8
+    }
+  },
+  {
+    "model": "hotel_review_service.review",
+    "pk": 7,
+    "fields": {
+      "author": 7,
+      "hotel": 1,
+      "caption": "Good value",
+      "comment": "Worth the money.",
+      "created_at": "2023-01-07",
+      "hotel_rating": 7
+    }
+  },
+  {
+    "model": "hotel_review_service.review",
+    "pk": 8,
+    "fields": {
+      "author": 8,
+      "hotel": 2,
+      "caption": "Lovely place",
+      "comment": "Had a great time here.",
+      "created_at": "2023-01-08",
+      "hotel_rating": 9
+    }
+  },
+  {
+    "model": "hotel_review_service.review",
+    "pk": 9,
+    "fields": {
+      "author": 9,
+      "hotel": 3,
+      "caption": "Not great",
+      "comment": "Expected more from this place.",
+      "created_at": "2023-01-09",
+      "hotel_rating": 5
+    }
+  },
+  {
+    "model": "hotel_review_service.review",
+    "pk": 10,
+    "fields": {
+      "author": 2,
+      "hotel": 4,
+      "caption": "Could be better",
+      "comment": "Needs improvement.",
+      "created_at": "2023-01-10",
+      "hotel_rating": 6
+    }
+  },
+  {
+    "model": "hotel_review_service.review",
+    "pk": 11,
+    "fields": {
+      "author": 3,
+      "hotel": 5,
+      "caption": "Decent stay",
+      "comment": "Was okay, not bad.",
+      "created_at": "2023-01-11",
+      "hotel_rating": 6
+    }
+  },
+  {
+    "model": "hotel_review_service.review",
+    "pk": 12,
+    "fields": {
+      "author": 4,
+      "hotel": 6,
+      "caption": "Fantastic!",
+      "comment": "Loved the hotel and the services.",
+      "created_at": "2023-01-12",
+      "hotel_rating": 9
+    }
+  },
+  {
+    "model": "hotel_review_service.review",
+    "pk": 13,
+    "fields": {
+      "author": 5,
+      "hotel": 1,
+      "caption": "Good stay",
+      "comment": "Will come back again.",
+      "created_at": "2023-01-13",
+      "hotel_rating": 8
+    }
+  },
+  {
+    "model": "hotel_review_service.userreviewreaction",
+    "pk": 1,
+    "fields": {
+      "user": 2,
+      "review": 1,
+      "reaction": "L"
+    }
+  },
+  {
+    "model": "hotel_review_service.userreviewreaction",
+    "pk": 2,
+    "fields": {
+      "user": 3,
+      "review": 2,
+      "reaction": "D"
+    }
+  },
+  {
+    "model": "hotel_review_service.userreviewreaction",
+    "pk": 3,
+    "fields": {
+      "user": 4,
+      "review": 3,
+      "reaction": "L"
+    }
+  },
+  {
+    "model": "hotel_review_service.userreviewreaction",
+    "pk": 4,
+    "fields": {
+      "user": 5,
+      "review": 4,
+      "reaction": "D"
+    }
+  },
+  {
+    "model": "hotel_review_service.userreviewreaction",
+    "pk": 5,
+    "fields": {
+      "user": 6,
+      "review": 5,
+      "reaction": "L"
+    }
+  },
+  {
+    "model": "hotel_review_service.userreviewreaction",
+    "pk": 6,
+    "fields": {
+      "user": 7,
+      "review": 6,
+      "reaction": "D"
+    }
+  },
+  {
+    "model": "hotel_review_service.userreviewreaction",
+    "pk": 7,
+    "fields": {
+      "user": 8,
+      "review": 7,
+      "reaction": "L"
+    }
+  },
+  {
+    "model": "hotel_review_service.userreviewreaction",
+    "pk": 8,
+    "fields": {
+      "user": 9,
+      "review": 8,
+      "reaction": "D"
+    }
+  },
+  {
+    "model": "hotel_review_service.userreviewreaction",
+    "pk": 9,
+    "fields": {
+      "user": 1,
+      "review": 1,
+      "reaction": "L"
+    }
+  },
+  {
+    "model": "hotel_review_service.userreviewreaction",
+    "pk": 10,
+    "fields": {
+      "user": 2,
+      "review": 10,
+      "reaction": "D"
+    }
+  },
+  {
+    "model": "hotel_review_service.userreviewreaction",
+    "pk": 11,
+    "fields": {
+      "user": 3,
+      "review": 1,
+      "reaction": "L"
+    }
+  },
+  {
+    "model": "hotel_review_service.userreviewreaction",
+    "pk": 12,
+    "fields": {
+      "user": 4,
+      "review": 2,
+      "reaction": "D"
+    }
+  },
+  {
+    "model": "hotel_review_service.userreviewreaction",
+    "pk": 13,
+    "fields": {
+      "user": 5,
+      "review": 1,
+      "reaction": "L"
+    }
+  }
+  ,
+  {
+    "model": "hotel_review_service.userreviewreaction",
+    "pk": 14,
+    "fields": {
+      "user": 5,
+      "review": 3,
+      "reaction": "L"
+    }
+  }
+]
