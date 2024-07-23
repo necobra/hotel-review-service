@@ -19,7 +19,9 @@ from hotel_review_service.views import (
 
 
 urlpatterns = [
-    path("", index, name="index"),
+    path("",
+         index,
+         name="index"),
     path("users/",
          UserListView.as_view(),
          name="user-list"),

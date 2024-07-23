@@ -183,12 +183,12 @@ class ReviewUpdateView(LoginRequiredMixin, generic.UpdateView):
     fields = ["caption", "comment", "hotel_rating"]
     success_url = reverse_lazy("hotel_review_service:review-list")
 
-    template_name = "hotel_review_service/review_confirm_delete.html"
-
 
 class ReviewDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Review
     success_url = reverse_lazy("hotel_review_service:review-list")
+
+    template_name = "hotel_review_service/review_confirm_delete.html"
 
 
 def review_rate(request, pk: int):
