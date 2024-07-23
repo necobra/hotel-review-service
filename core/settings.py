@@ -28,6 +28,7 @@ DEBUG = 'RENDER' not in os.environ
 
 ALLOWED_HOSTS = [
     "127.0.0.1",
+    "hotel-review-service-cyp5.onrender.com"
 ]
 
 INTERNAL_IPS = [
