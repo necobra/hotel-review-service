@@ -13,6 +13,11 @@ import os
 import dj_database_url
 from pathlib import Path
 
+from dotenv import load_dotenv
+
+
+load_dotenv()
+
 # Build paths inside the project like this: BASE_DIR / "subdir".
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -99,7 +104,7 @@ DATABASES = {
 db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES["default"].update(db_from_env)
 
-DATABASE_URL = "postgresql://neondb_owner:9hSjf8pdHWic@ep-solitary-pond-a2okgu44.eu-central-1.aws.neon.tech/neondb?sslmode=require"
+DATABASE_URL = os.environ["DATABASE_URL"]
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
