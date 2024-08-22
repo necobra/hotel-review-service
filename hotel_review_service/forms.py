@@ -1,6 +1,9 @@
 from django import forms
 
-from hotel_review_service.models import Hotel, Review
+from hotel_review_service.models import (
+    Hotel,
+    Review
+)
 
 
 class HotelForm(forms.ModelForm):

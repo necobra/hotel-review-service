@@ -3,9 +3,21 @@ from typing import Any
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Avg, Count, Q, QuerySet
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404, redirect
+from django.db.models import (
+    Avg,
+    Count,
+    Q,
+    QuerySet
+)
+from django.http import (
+    HttpResponse,
+    HttpResponseRedirect
+)
+from django.shortcuts import (
+    render,
+    get_object_or_404,
+    redirect
+)
 from django.urls import reverse_lazy
 from django.views import generic
 
@@ -90,10 +102,10 @@ class HotelCreateView(LoginRequiredMixin, generic.CreateView):
     def form_valid(self, form) -> HttpResponseRedirect:
         hotel = form.save(commit=False)
 
-        contry = form.cleaned_data["country"]
+        country = form.cleaned_data["country"]
         city = form.cleaned_data["city"]
         address = form.cleaned_data["address"]
-        placement = Placement.objects.create(country=contry,
+        placement = Placement.objects.create(country=country,
                                              city=city,
                                              address=address)
 
@@ -111,10 +123,10 @@ class HotelUpdateView(LoginRequiredMixin, generic.UpdateView):
     def form_valid(self, form) -> HttpResponseRedirect:
         hotel = form.save(commit=False)
 
-        contry = form.cleaned_data["country"]
+        country = form.cleaned_data["country"]
         city = form.cleaned_data["city"]
         address = form.cleaned_data["address"]
-        placement = Placement.objects.create(country=contry,
+        placement = Placement.objects.create(country=country,
                                              city=city,
                                              address=address)
 

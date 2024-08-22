@@ -1,4 +1,9 @@
-from django.db.models import Manager, QuerySet, Count, Q
+from django.db.models import (
+    Manager,
+    QuerySet,
+    Count,
+    Q
+)
 
 
 def get_reviews_with_calculated_fields(reviews: Manager) -> QuerySet:
