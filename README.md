@@ -20,4 +20,8 @@ python manage.py runserver  # starts Django Server
 * Leaving review for Hotel
 * Liking/disliking reviews of other User
 
+## Environment Variables
+You have to create .env file and provide DABASE_URL variable\
+You can find .env.sample in project root
+
 ## Demo
