@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Hotel reviews</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+  {% load static %}
+  <link rel="icon" href="{% static 'img/favicon.png' %}">
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+  <link id="pagestyle" href="{% static 'css/material-kit.css' %}" rel="stylesheet"/>
+  
+  <!-- Material Icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+</head>
+
+<body {% block body %}{% endblock body %} >
+{% block header %}
+  {% include 'includes/navigation.html' %}
+{% endblock header %}
+{% block page_structure %}
+  {% block content %}
+  {% endblock %}
+{% endblock %}
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="" crossorigin="anonymous"></script>
+<script type="text/javascript" src="{% static 'js/bootstrap.bundle.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/bootstrap.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/rate_review_form.js' %}"></script>
+</body>
+
+</html>

@@ -1,0 +1,15 @@
+{% load static %}
+<form action="{% url 'hotel_review_service:review-rate' review.id %}" class="rate-review-form" method="POST"
+      data-author="{{ review.author.id }}" data-user="{{ user.id }}">
+  {% csrf_token %}
+
+  <button type="submit" name="reaction" value="like" class="bg-transparent border-0 btn m-0">
+    <i class="material-icons-round {% if review in user.liked %}text-success{% endif %}">thumb_up</i>
+  </button>
+
+  <span>{{ review.review_rating }}</span>
+
+  <button type="submit" name="reaction" value="dislike" class="bg-transparent border-0 btn m-0">
+    <i class="material-icons-round {% if review in user.disliked %}text-danger{% endif %}">thumb_down</i>
+  </button>
+</form>

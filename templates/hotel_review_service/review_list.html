@@ -1,0 +1,23 @@
+{% extends "hotel_review_service/content_page.html" %}
+
+{% block content %}
+  <h1>
+    Review list
+  </h1>
+  <form method="get" action="" class="col-3">
+    {% block search_input %}
+      {% include "includes/search-input.html" %}
+    {% endblock %}
+  </form>
+  {% if review_list %}
+    <ul class="list-group">
+      {% for review in review_list %}
+        <li class="list-group-item bg-transparent border-0">
+          {% include "hotel_review_service/includes/review_inline.html" %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>There are no review yet</p>
+  {% endif %}
+{% endblock %}

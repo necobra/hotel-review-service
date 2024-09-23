@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load static %}
+{% block body %} class="index-page bg-gray-200" {% endblock body %}
+{% block header %}
+  {% include 'includes/navigation-light.html' %}
+{% endblock header %}
+
+{% block page_structure %}
+<div class="container mt-5">
+  <div class="row">
+    {% block content %}
+    {% endblock %}
+    {% block pagination %}
+      {% include "includes/pagination.html" %}
+    {% endblock %}
+  </div>
+</div>
+{% endblock %}

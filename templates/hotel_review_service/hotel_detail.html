@@ -1,0 +1,44 @@
+{% extends "hotel_review_service/content_page.html" %}
+
+{% block content %}
+  <div class="container mt-5">
+    <div class="bg-light p-4 rounded shadow-sm mb-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="h3">
+          {{ hotel.name }}
+        </h1>
+        <div>
+          <a href="{% url 'hotel_review_service:hotel-update' pk=hotel.id %}" class="btn btn-secondary mr-2">
+            Update
+          </a>
+          <a href="{% url 'hotel_review_service:hotel-delete' pk=hotel.id %}" class="btn btn-danger">
+            Delete
+          </a>
+        </div>
+      </div>
+      <div>
+        <p class="mb-2 d-flex align-items-center"><i class="material-icons-round">star</i> <strong>Hotel
+          Class: </strong>&nbsp;{{ hotel.hotel_class }}</p>
+        <p class="mb-2 d-flex align-items-center"><i class="material-icons-round">location_on</i>
+          <strong>Location: </strong>&nbsp;{{ hotel.placement }}</p>
+        <p class="mb-2 d-flex align-items-center"><i class="material-icons-round">grade</i> <strong>Average
+          Rating: </strong>&nbsp;{{ hotel.average_rating|default_if_none:"--" }}</p>
+      </div>
+    </div>
+    <div class="bg-light p-4 rounded shadow-sm">
+      <h2 class="h4">Reviews</h2>
+
+      <a href="{% url 'hotel_review_service:review-create' pk=hotel.id %}" class="btn btn-primary link-to-page col-2">
+        Leave a review
+      </a>
+
+      <ul class="list-group list-group-flush">
+        {% for review in hotel_reviews %}
+          <li class="list-group-item bg-transparent">
+            {% include "hotel_review_service/includes/review_inline.html" %}
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+{% endblock %}

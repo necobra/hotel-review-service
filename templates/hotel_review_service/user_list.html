@@ -1,0 +1,33 @@
+{% extends "hotel_review_service/content_page.html" %}
+
+{% block content %}
+  <div class="container mt-5">
+    <h1 class="mb-4">User list</h1>
+    <form method="get" action="" class="col-3">
+      {% block search_input %}
+        {% include "includes/search-input.html" %}
+      {% endblock %}
+    </form>
+    {% if user_list %}
+      <ul class="list-group mt-2">
+        {% for user_stat in user_list %}
+          <li class="list-group-item d-flex align-items-center mb-1">
+            {% load static %}
+            <img src="{% static 'img/avatar.png' %}" alt="Avatar" class="rounded-circle mr-3"
+                 style="width: 50px; height: 50px;">
+            <div class="flex-grow-1">
+              <a href="{% url 'hotel-review-service:user-detail' pk=user_stat.id %}" class="text-dark font-weight-bold">
+                {{ user_stat.first_name }} {{ user_stat.last_name }}
+              </a>
+              <div class="text-muted">
+                Reviews: {{ user_stat.reviews_amount }}
+              </div>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>There are no users yet</p>
+    {% endif %}
+  </div>
+{% endblock %}

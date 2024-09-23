@@ -1,0 +1,21 @@
+{% extends "hotel_review_service/content_page.html" %}
+
+{% block content %}
+  <h1>
+    {{ user.first_name }} {{ user.last_name }}
+{#    <a href="{% url 'hotel_review_service:user-delete' pk=hotel.id %}" class="btn btn-danger link-to-page">#}
+{#      Delete#}
+{#    </a>#}
+{##}
+{#    <a href="{% url 'hotel_review_service:user-update' pk=hotel.id %}" class="btn btn-secondary link-to-page">#}
+{#      Update#}
+{#    </a>#}
+  </h1>
+  <p>User's reviews amount: {{ user.reviews_amount }}</p>
+  <hr>
+  <ul>
+    {% for review in user_reviews %}
+      {% include "hotel_review_service/includes/review_inline.html" %}
+    {% endfor %}
+  </ul>
+{% endblock %}

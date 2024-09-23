@@ -1,0 +1,13 @@
+{% extends "hotel_review_service/content_page.html" %}
+{% load crispy_forms_filters %}
+{% block content %}
+  <div>
+    <h1>{{ object|yesno:"Update,Create" }} hotel</h1>
+    <form action="" method="post" novalidate>
+      {% csrf_token %}
+      {{ form|crispy }}
+
+      <input type="submit" value="Submit" class="btn btn-primary">
+    </form>
+  </div>
+{% endblock %}
